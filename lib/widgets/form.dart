@@ -89,13 +89,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               onChanged: _validateEmail,
               wasSubmitted: _initialFocusEmail,
               isValid: _isEmailValid,
-              // validate: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return null;
-              //   }
-              //   _isEmailValid = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value);
-              //   return null;
-              // },
             ),
             const SizedBox(height: 20),
             PasswordField(
@@ -110,15 +103,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               wasSubmitted: _initialFocusPassword,
               isValid: _isPasswordValid,
               isPasswordVisible: _isPasswordVisible,
-              // validate: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return null;
-              //   }
-              //   _hasUpperCase = _passwordValidator.hasUpperCase(value);
-              //   _hasLowerCase = _passwordValidator.hasLowerCase(value);
-              //   _isPasswordValid = _passwordValidator.isValid(value);
-              //   return null;
-              // },
               toggleVisibility: () =>
                   setState(() {
                     _isPasswordVisible = !_isPasswordVisible;

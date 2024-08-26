@@ -7,7 +7,6 @@ class EmailField extends StatelessWidget {
   final void Function(String) onChanged;
   final bool wasSubmitted;
   final bool isValid;
-  // final String? Function(String?)? validate;
   final ValueChanged<bool>? onFocusChange;
 
   const EmailField({
@@ -15,7 +14,6 @@ class EmailField extends StatelessWidget {
     required this.onChanged,
     required this.wasSubmitted,
     required this.isValid,
-    // required this.validate,
     required this.onFocusChange,
   });
 
@@ -39,7 +37,6 @@ class EmailField extends StatelessWidget {
                 isValid: isValid,
                 wasSubmitted: wasSubmitted,
               ),
-              // validator: validate,
             )));
   }
 }
@@ -50,7 +47,6 @@ class PasswordField extends StatelessWidget {
   final bool isValid;
   final bool isPasswordVisible;
 
-  // final String? Function(String?)? validate;
   final VoidCallback toggleVisibility;
   final ValueChanged<bool>? onFocusChange;
 
@@ -60,7 +56,6 @@ class PasswordField extends StatelessWidget {
     required this.wasSubmitted,
     required this.isValid,
     required this.isPasswordVisible,
-    // required this.validate,
     required this.toggleVisibility,
     required this.onFocusChange,
   });
@@ -79,7 +74,6 @@ class PasswordField extends StatelessWidget {
         child: Focus(
           onFocusChange: onFocusChange,
           child: TextFormField(
-            // validator: validate,
             onChanged: onChanged,
             obscureText: !isPasswordVisible,
             decoration: getInputDecoration(
