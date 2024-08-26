@@ -24,7 +24,7 @@ class PasswordCriteria extends StatelessWidget {
             fontWeight: FontWeight.w400,
             color: isValid
                 ? colorValidHint
-                : (passWasFocused ? colorErrorBorderColor : colorPrimary),
+                : (passWasFocused&&!isValid ? colorErrorBorderColor : colorPrimary),
           ),
         ));
   }

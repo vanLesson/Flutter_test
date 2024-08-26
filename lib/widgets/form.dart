@@ -15,59 +15,47 @@ class RegistrationForm extends StatefulWidget {
 class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   final PasswordValidator _passwordValidator = PasswordValidator();
-  final FocusNode _passwordFocusNode = FocusNode();
-  final FocusNode _emailFocusNode = FocusNode();
 
   bool _isPasswordVisible = false;
   bool _wasSubmitted = false;
   bool _isPasswordValid = false;
   bool _isEmailValid = false;
-  bool _passWasFocused = false;
   bool _hasUpperCase = false;
   bool _hasLowerCase = false;
+  bool _initialFocusPassword = false;
+  bool _initialFocusEmail = false;
 
   String _password = '';
   String _email = '';
 
-  @override
-  void initState() {
-    super.initState();
-    _passwordFocusNode.addListener(_onPasswordFocusChange);
-  }
 
-  void _onPasswordFocusChange() {
-    if (_passwordFocusNode.hasFocus) {
-      setState(() {
-        _passWasFocused = true;
-      });
-    }
-  }
 
   void _validatePassword(String value) {
     setState(() {
       _password = value;
+      _hasUpperCase = _passwordValidator.hasUpperCase(value);
+      _hasLowerCase = _passwordValidator.hasLowerCase(value);
+      _isPasswordValid = _passwordValidator.isValid(value);
     });
   }
 
   void _validateEmail(String value) {
     setState(() {
       _email = value;
+      _isEmailValid = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value);
     });
   }
 
   void _submitForm() {
     setState(() {
       _wasSubmitted = true;
+      _initialFocusPassword = true;
+      _initialFocusEmail = true;
       _formKey.currentState!.validate();
     });
   }
 
-  @override
-  void dispose() {
-    _passwordFocusNode.dispose();
-    _emailFocusNode.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,62 +79,75 @@ class _RegistrationFormState extends State<RegistrationForm> {
             ),
             const SizedBox(height: 20),
             EmailField(
-              focusNode: _emailFocusNode,
-              onChanged: _validateEmail,
-              wasSubmitted: _wasSubmitted,
-              isValid: _isEmailValid,
-              validate: (value) {
-                if (value == null || value.isEmpty) {
-                  return null;
+              onFocusChange:(focus) {
+                if (!focus) {
+                  setState(() {
+                    _initialFocusEmail = true;
+                  });
                 }
-                _isEmailValid = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value);
-                return null;
-              },
+              } ,
+              onChanged: _validateEmail,
+              wasSubmitted: _initialFocusEmail,
+              isValid: _isEmailValid,
+              // validate: (value) {
+              //   if (value == null || value.isEmpty) {
+              //     return null;
+              //   }
+              //   _isEmailValid = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value);
+              //   return null;
+              // },
             ),
             const SizedBox(height: 20),
             PasswordField(
-              focusNode: _passwordFocusNode,
+              onFocusChange: (focus) {
+                if (!focus) {
+                  setState(() {
+                    _initialFocusPassword = true;
+                  });
+                }
+              },
               onChanged: _validatePassword,
-              wasSubmitted: _wasSubmitted,
+              wasSubmitted: _initialFocusPassword,
               isValid: _isPasswordValid,
               isPasswordVisible: _isPasswordVisible,
-              validate: (value) {
-                if (value == null || value.isEmpty) {
-                  return null;
-                }
-                _hasUpperCase = _passwordValidator.hasUpperCase(value);
-                _hasLowerCase = _passwordValidator.hasLowerCase(value);
-                _isPasswordValid = _passwordValidator.isValid(value);
-                return null;
-              },
-              toggleVisibility: () => setState(() {
-                _isPasswordVisible = !_isPasswordVisible;
-              }),
+              // validate: (value) {
+              //   if (value == null || value.isEmpty) {
+              //     return null;
+              //   }
+              //   _hasUpperCase = _passwordValidator.hasUpperCase(value);
+              //   _hasLowerCase = _passwordValidator.hasLowerCase(value);
+              //   _isPasswordValid = _passwordValidator.isValid(value);
+              //   return null;
+              // },
+              toggleVisibility: () =>
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  }),
             ),
             const SizedBox(height: 20),
-
             PasswordCriteria(
               text: '8 characters or more (no spaces)',
               isValid: _passwordValidator.isLengthValid(_password) &&
                   _passwordValidator.hasNoSpaces(_password),
-              passWasFocused: _passWasFocused,
+              passWasFocused: _initialFocusPassword,
             ),
             const SizedBox(height: 4),
             PasswordCriteria(
               text: 'Uppercase and lowercase letters',
               isValid: _hasUpperCase && _hasLowerCase,
-              passWasFocused: _wasSubmitted,
+              passWasFocused: _initialFocusPassword,
             ),
             const SizedBox(height: 4),
             PasswordCriteria(
               text: 'At least one digit',
               isValid: _passwordValidator.hasDigits(_password),
-              passWasFocused: _passWasFocused,
+              passWasFocused: _initialFocusPassword,
             ),
             const SizedBox(height: 40),
-
             SubmitButton(
-              onPressed: _password.isNotEmpty && _email.isNotEmpty ? _submitForm : null,
+              onPressed: _password.isNotEmpty && _email.isNotEmpty
+                  ? _submitForm
+                  : null,
             ),
           ],
         ),

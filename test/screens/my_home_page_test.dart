@@ -28,12 +28,25 @@ void main() {
 
     expect(tester.widget<Opacity>(find.ancestor(of: signUpButton, matching: find.byType(Opacity))).opacity, equals(1.0));
   });
-
-  testWidgets('MyHomePage shows password criteria as invalid when not met', (WidgetTester tester) async {
+  testWidgets('MyHomePage shows password criteria as default with focused input', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: MyHomePage()));
 
     await tester.enterText(find.byType(TextFormField).at(1), 'Pass');
 
+    await tester.pump();
+
+    final textWidget1 = tester.widget<Text>(find.text('8 characters or more (no spaces)'));
+    expect(textWidget1.style?.color, equals(colorPrimary));
+
+    final textWidget3 = tester.widget<Text>(find.text('At least one digit'));
+    expect(textWidget3.style?.color, equals(colorPrimary));
+  });
+  testWidgets('MyHomePage shows password criteria as invalid after focusing on another input', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: MyHomePage()));
+
+    await tester.enterText(find.byType(TextFormField).at(1), 'Pass');
+
+    await tester.tap(find.byType(TextFormField).at(0));
     await tester.pump();
 
     final textWidget1 = tester.widget<Text>(find.text('8 characters or more (no spaces)'));
